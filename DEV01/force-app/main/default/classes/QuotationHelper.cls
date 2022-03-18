@@ -9,7 +9,7 @@ public class QuotationHelper implements QuotationSync {
     }
 
     public List<Inventario__c> productsInventory(){
-        Inventario__c inv = [SELECT Id, IdExterno__c, Name, Cantidad_dis__c, Cantidad_apart__c, CodigoProd__c FROM Inventario__c ];
+        List<Inventario__c> inv = [SELECT Id, IdExterno__c, Name, Cantidad_dis__c, Cantidad_apart__c, CodigoProd__c FROM Inventario__c ];
         return inv;
     }
 
