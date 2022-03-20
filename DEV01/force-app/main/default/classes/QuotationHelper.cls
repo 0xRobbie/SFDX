@@ -13,8 +13,8 @@ public class QuotationHelper implements QuotationSync {
         return inv;
     }
 
-    public boolean confirmProductExistByCode(String p_code){
-        Product__c qrId = [SELECT id FROM Product__c WHERE Product__c.ProductCode__c = :p_code];
+    public boolean confirmProductExistByCode(String codigoDeProducto){
+        Inventario__c qrId = [SELECT Id FROM Inventario__c WHERE Inventario__c.IdExterno__c = :codigoDeProducto];
         if (qrID != null) {
             return true;
         } else {
@@ -22,8 +22,8 @@ public class QuotationHelper implements QuotationSync {
         }
     }
 
-    public double searchProductByCode(String p_code){
-        Inventario__c unidades = [SELECT Id, Cantidad_dis__c FROM Inventario__c WHERE Inventario__c.CodigoProd__c = :p_code];
+    public double searchProductByCode(String codigoDeProducto){
+        Inventario__c unidades = [SELECT Id, Cantidad_dis__c FROM Inventario__c WHERE Inventario__c.IdExterno__c = :codigoDeProducto];
         if (unidades.Cantidad_dis__c > 0) {
             return unidades.Cantidad_dis__c;
         } else {
@@ -31,5 +31,20 @@ public class QuotationHelper implements QuotationSync {
         }
     }
 
+    public static void actualizarCantidad(String productoId, Decimal cantidad){
+        Inventario__c inv = [SELECT IdExterno__c, Cantidad_dis__c, Cantidad_apart__c FROM Inventario__c WHERE IdExterno__c = :productoId];
+
+        if(inv.Cantidad_dis__c > cantidad){
+            inv.Cantidad_apart__c = inv.Cantidad_apart__c + cantidad;
+            inv.Cantidad_dis__c = inv.Cantidad_dis__c - cantidad;
+            update inv;
+        }
+
+        System.Debug(cantidad);
+        System.Debug(inv.Cantidad_apart__c);
+        System.Debug(inv.Cantidad_dis__c);
+    }
+
 }
+
 
