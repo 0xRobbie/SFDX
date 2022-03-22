@@ -1,31 +1,38 @@
-<apex:page controller="CotizacionController">
-	<apex:pageBlock >
+<apex:page standardController="Quote" extensions="CotizacionController">
+	<apex:pageBlock title="Hola {! $user.FirstName }">
         <apex:outputPanel >
         	<apex:pageMessages id="msg"/>
         </apex:outputPanel>
         
-    	<apex:form >
+    	<apex:form id="form_prod">
         	<apex:pageBlockSection title="Buscar un producto" columns="1">
         		Código de Producto:
                 <apex:inputText id="buscarProd" value="{! cod_prod }"/>
-                <apex:commandButton Id="btnBuscar" action="{! buscarProducto }" rerender="renderBlock, msg" status="status" title="Buscar" value="Buscar" />
+                <apex:commandButton Id="btnBuscar" action="{! buscarProducto }" rerender="renderBlock, msg" title="Buscar" value="Buscar" />
                 
             </apex:pageBlockSection>
         </apex:form>
         
-        <apex:form >
+        <apex:form id="form_cantidad">
             <apex:pageBlocksection id="renderBlock" >
                 <apex:pageBlockTable value="{! resultados }" var="i" rendered="{!NOT(ISNULL(resultados))}">
                     <apex:column value="{! i.Name }"/>
                     <apex:column value="{! i.IdExterno__c }"/>
-                    <apex:column > <apex:facet name="header">Cantidad</apex:facet> <apex:inputField value="{! i.Cantidad_apart__c }" /></apex:column>
+                    <apex:column > 
+                        <apex:facet name="header">Cantidad</apex:facet> <apex:inputField id="cantidad" value="{! i.Cantidad_apart__c }" />
+                    </apex:column>
                     <apex:column value="{! i.Cantidad_dis__c }"/>
                 </apex:pageBlockTable>
+            </apex:pageBlocksection>
                 
-                <apex:pageBlockSection >
-                	<apex:commandButton Id="btnIngresarCantidad" action="{! ingresarCantidad }" status="status" title="Ingresar Cantidad" value="Guardar" />
-                </apex:pageBlockSection>
-                
+            <apex:pageBlockSection >
+                <apex:pageBlockSectionItem>
+                    <apex:outputPanel layout="none">
+                        <apex:commandButton Id="btnCancelarCantidad" action="{! cancelar }"  rerender="renderBlock" value="Cancelar" />
+                        <apex:commandButton Id="btnAtrasCantidad" action="{! atras }"  rerender="renderBlock, buscarProd" value="Atras" />
+                        <apex:commandButton Id="btnIngresarCantidad" action="{! ingresarCantidad }" value="Guardar" />            
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
             </apex:pageBlocksection>
          </apex:form>
         

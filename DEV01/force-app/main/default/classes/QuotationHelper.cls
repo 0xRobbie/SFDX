@@ -14,7 +14,7 @@ public class QuotationHelper implements QuotationSync {
     }
 
     public boolean confirmProductExistByCode(String codigoDeProducto){
-        Inventario__c qrId = [SELECT Id FROM Inventario__c WHERE Inventario__c.IdExterno__c = :codigoDeProducto];
+        Inventario__c qrId = [SELECT Id, Name FROM Inventario__c WHERE Inventario__c.IdExterno__c = :codigoDeProducto];
         if (qrID != null) {
             return true;
         } else {
@@ -44,6 +44,24 @@ public class QuotationHelper implements QuotationSync {
         System.Debug(inv.Cantidad_apart__c);
         System.Debug(inv.Cantidad_dis__c);
     }
+
+    @InvocableMethod(label='StockAlert')
+    public static void StockEmptyAlert(){
+        List<Inventario__c> lstInv = new List<Inventario__C>();
+        QuotationHelper qt = new QuotationHelper();
+
+        lstInv = qt.productsInventory();
+        List<FeedItem> feed = new List<FeedItem>();
+        for(Inventario__c inv : lstInv){
+            if (inv.Cantidad_dis__c == 0) {
+                FeedItem objPost = new FeedItem();
+                objPost.ParentId = UserInfo.getUserId();
+                objPost.Body = 'Producto sin inventario';
+                feed.add(objPost);
+            }
+        }
+    }
+
 
 }
 
